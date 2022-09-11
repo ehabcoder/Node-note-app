@@ -4,9 +4,9 @@ exports.register = async (req, res) => {
     try {
         const user = await User.create(req.body);
         const token = await user.generateToken();
-        res.status(201).send(user);
+        res.status(201).send({user, token});
     } catch (error) {
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 }
 

@@ -13,9 +13,8 @@ const User = sequelize.define('users', {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
         validate: {
-            isEmail(value) {
+            isEmail: (value) => {
                 if(!validator.isEmail(value)) {
                     throw new Error('Email is invalid');
                 }
@@ -43,6 +42,9 @@ const User = sequelize.define('users', {
 })
 
 User.addHook('beforeCreate', async (user, options) => {
+    if(await User.findOne({where: {email: user.email}})) {
+        throw new Error('Email already used before.')
+    }
     if(user.password) {
         user.password = await bcrypt.hash(user.password, 8);
     }
