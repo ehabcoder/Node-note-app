@@ -90,7 +90,7 @@ exports.uploadProfilePic = async (req, res) => {
 
 
 exports.deleteProfilePic = async (req, res) => {
-    req.user.profile_picture = null;
+    req.user.profile_picture = '';
     await req.user.save();
     res.send();
 }
