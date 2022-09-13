@@ -34,11 +34,15 @@ router.delete('/users/me', auth, userController.delete)
 
 /// Uploading files routes
 
-// upload user's profile picture
+// uploading user's profile picture
 router.post('/users/me/profilePic', auth, upload.single('profilePic'),
  userController.uploadProfilePic, (error, req, res, next) => {
     res.status(400).send({error: error.message});
  });
 
-
+// deleting user's profile picture
+router.delete('/users/me/profilePic', auth, upload.single('profilePic'),
+ userController.deleteProfilePic, (error, req, res, next) => {
+    res.status(400).send({error: error.message});
+ })
 module.exports = router;

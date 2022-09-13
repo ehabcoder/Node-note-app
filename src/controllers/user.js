@@ -79,10 +79,18 @@ exports.delete = async (req, res) => {
     }
 }
 
-// uploading profile pictures controller functions
+/// uploading profile pictures controller functions
+
 exports.uploadProfilePic = async (req, res) => {
     const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
     req.user.profile_picture = buffer;
+    await req.user.save();
+    res.send();
+}
+
+
+exports.deleteProfilePic = async (req, res) => {
+    req.user.profile_picture = null;
     await req.user.save();
     res.send();
 }
