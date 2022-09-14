@@ -45,4 +45,8 @@ router.delete('/users/me/profilePic', auth, upload.single('profilePic'),
  userController.deleteProfilePic, (error, req, res, next) => {
     res.status(400).send({error: error.message});
  })
+
+// getting user's profile picture
+router.get('/users/:id/profilePic', auth, userController.getProfilePic)
+
 module.exports = router;

@@ -3,7 +3,7 @@ const { DataTypes } = require('sequelize');
 const bcrypt = require('bcryptjs')
 const validator = require('validator');
 const jwt = require('jsonwebtoken')
-
+const Note = require('./Note')
 
 const User = sequelize.define('users', {
     name: {
@@ -33,15 +33,20 @@ const User = sequelize.define('users', {
         }
     },
     token: {
-        type: String,
+        type: DataTypes.STRING,
         required: true
     },
     profile_picture: {
-        type: DataTypes.STRING,
+        type: DataTypes.BLOB,
         allowNull: true,
         defaultValue: '',
     }
 })
+
+User.hasMany(Note, {
+    foreignKey: 'owner'
+})
+
 
 User.addHook('beforeCreate', async (user, options) => {
     if(await User.findOne({where: {email: user.email}})) {

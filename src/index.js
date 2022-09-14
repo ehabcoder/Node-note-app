@@ -1,20 +1,22 @@
 const express = require('express');
 const cors = require("cors");
 require('./db/sequelize')
-const corsOptions = {
-    origin: "http://localhost:3000"
-}
+// const corsOptions = {
+//     origin: "http://localhost:3000"
+// }
 const app = express();
 
-app.use(cors(corsOptions))
+// app.use(cors(corsOptions))
 
-app.use(express.json())
+app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
 const userRouter = require('./router/user');
+const noteRouter = require('./router/note');
 
-app.use(userRouter)
+app.use(userRouter);
+app.use(noteRouter);
 
 const port = process.env.PORT || 3000;
 
