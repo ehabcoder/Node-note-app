@@ -31,7 +31,6 @@ exports.logout = async (req, res) => {
         await req.user.save();
         res.send();
     } catch (e) {
-        console.log(e.message)
         res.status(500).send();
     }
 }
@@ -84,7 +83,6 @@ exports.delete = async (req, res) => {
 // Uplaod profile picture
 exports.uploadProfilePic = async (req, res) => {
     const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
-    console.log(buffer)
     req.user.profile_picture = buffer;
     await req.user.save();
     res.send();

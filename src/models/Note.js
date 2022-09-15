@@ -1,7 +1,5 @@
 const sequelize = require('../db/sequelize');
 const { DataTypes } = require('sequelize');
-const User = require('./User')
-const NoteType = require('./Note_type');
 
 const Note = sequelize.define('notes', {
     title: {
@@ -12,23 +10,25 @@ const Note = sequelize.define('notes', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    note_type: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+    disabled: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     },
     owner: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    from: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+    },
     media_file: {
         type: DataTypes.BLOB,
         allowNull: true,
         defaultValue: ''
-    },
+    }
 })
 
-Note.hasOne(NoteType, {
-    foreignKey: 'note_type'
-})
 
 module.exports = Note;
