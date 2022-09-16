@@ -36,4 +36,10 @@ router.post('/notes', auth, upload.single('media_file'), noteController.send);
 */
 router.get('/notes', auth, noteController.list);
 
+/*
+    DELETE /notes/:noteId
+    Soft delete a users' note
+*/
+router.delete('/notes/:noteId', auth, noteController.delete);
+
 module.exports = router;

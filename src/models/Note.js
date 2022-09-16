@@ -28,6 +28,8 @@ const Note = sequelize.define('notes', {
         allowNull: true,
         defaultValue: ''
     }
+}, {
+    paranoid: true
 })
 
 

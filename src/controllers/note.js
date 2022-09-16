@@ -51,3 +51,29 @@ exports.list = async (req, res) => {
         res.status(500).send(e.message);
     }
 }
+
+exports.delete = async (req, res) => {
+    const noteId = req.params.noteId;
+    if (!noteId) {
+        return res.status(401).send("please provide a vaild note id in the params.")
+    }
+    try {
+        const note_to_delete = await Note.findOne({where: {id: noteId}})
+        if(req.user.id === note_to_delete.owner) {
+            const deletedNote = await Note.destroy({
+                where: {
+                    id: noteId
+                }
+            })
+            if (deletedNote) {
+                res.send({message: 'Note deleted successfully.'})
+            } else {
+                res.status(401).send({error: "Something went wrong! Please try again later."})
+            }
+        } else {
+            res.status(401).send({error: "You are not authorized to delete this note."})
+        }
+    } catch (e) {
+        return res.status(500).send(e.message)
+    }
+}
