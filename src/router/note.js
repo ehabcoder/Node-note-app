@@ -42,4 +42,9 @@ router.get('/notes', auth, noteController.list);
 */
 router.delete('/notes/:noteId', auth, noteController.delete);
 
+// Testing handlebars 
+router.get('/', (req, res) => {
+    res.render('main')
+})
+
 module.exports = router;
