@@ -13,6 +13,10 @@ const upload = multer({
         cb(undefined, true)
     }
 })
+
+// is email available?
+router.post('/users/email', userController.emailAvailable)
+
 // Create user
 router.post('/users/register', userController.register)
 

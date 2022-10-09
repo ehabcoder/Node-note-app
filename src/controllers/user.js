@@ -2,11 +2,22 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const sharp = require('sharp');
 
+exports.emailAvailable = async (req, res) => {
+    try { 
+        const user = await User.findOne({where: {email: req.body.username}});
+        if(user) {
+            return res.status(200).send({email: user.email})
+        }
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+}
+
 exports.register = async (req, res) => {
     try {
         const user = await User.create(req.body);
         const token = await user.generateToken();
-        res.status(201).send({user, token});
+        res.status(201).send({user});
     } catch (error) {
         res.status(400).send(error.message);
     }
@@ -17,7 +28,7 @@ exports.login = async (req, res) => {
         const user = await User.authenticateUser(req.body.email, req.body.password);
         if(user) {
             const token = await user.generateToken();
-            return res.status(200).json({user, token});
+            return res.status(200).json({user});
         } 
         else return res.status(404).json("Unable to connect");
     } catch (e) {

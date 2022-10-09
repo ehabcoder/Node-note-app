@@ -1,13 +1,10 @@
 const express = require('express');
 const path = require('path');
-// const cors = require("cors");
+const cors = require("cors");
 require('./db/sequelize');
-// const corsOptions = {
-//     origin: "http://localhost:3000"
-// }
 const app = express();
 
-// app.use(cors(corsOptions))
+app.use(cors())
 
 //Loads the handlebars module
 const { engine } = require('express-handlebars');
