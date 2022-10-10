@@ -2,11 +2,17 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const sharp = require('sharp');
 
+exports.signedin = async (req, res) => {
+    return res.status(200).send({authenticated: true});
+}
+
 exports.emailAvailable = async (req, res) => {
     try { 
-        const user = await User.findOne({where: {email: req.body.username}});
+        const user = await User.findOne({where: {email: req.body.email}});
         if(user) {
-            return res.status(200).send({email: user.email})
+            return res.status(400).send({available: false})
+        } else {
+            return res.status(200).send({available: true})
         }
     } catch (error) {
         res.status(400).send(error.message);
