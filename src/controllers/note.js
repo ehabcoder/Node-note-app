@@ -10,6 +10,7 @@ exports.send = async (req, res) => {
             return res.status(401).send(`Bad input! Please provide a userIds query parameter in the url.`)
         }
         const usersToSendTo_ids = req.query.userIds.split(',')
+
         const buffer = await sharp(req.file.buffer).resize({width: 255, height: 250}).png().toBuffer();
     
         for(let id of usersToSendTo_ids) {
@@ -17,7 +18,6 @@ exports.send = async (req, res) => {
                 return res.status(401).send(`Bad input! No user with the id of ${id}`)
             }
         }
-
         usersToSendTo_ids.forEach(async (userId) => {
             await Note.create({
                 ...req.body,
@@ -30,7 +30,28 @@ exports.send = async (req, res) => {
             message: `Note successfully sent to users with ids ${req.query.userIds}`
         });
     } catch (e) {
-        console.log(e.message);
+        res.status(500).send(e)
+    }
+}
+
+exports.sendWithEmail = async (req, res) => {
+    try {
+       const recieverUser = await User.findOne({where: { email: req.body.noteSenderEmails }});
+       const note = {
+        title: req.body.noteTitle,
+        body: req.body.noteBody,
+        note_type: req.body.noteDisabled
+       }
+       await Note.create({
+        ...note,
+        owner: recieverUser.id,
+        from: req.user.id
+       })
+       res.status(201).send({
+        message: `Note successfully sent to ${recieverUser.email}`
+    });
+    } catch (error) {
+        res.status(500).send(error.message)
     }
 }
 
@@ -38,7 +59,7 @@ exports.list = async (req, res) => {
     try {
         const userNotes = await req.user.getNotes({
             where: {
-                disabled: req.query.disabled === 1,
+                // disabled: req.query.disabled === 1,
                 createdAt: {
                     [Op.gte]: moment().subtract(30, 'days').toDate()
                 }
@@ -49,6 +70,31 @@ exports.list = async (req, res) => {
         res.send(userNotes)
     } catch (e) {
         res.status(500).send(e.message);
+    }
+}
+
+exports.getNote = async (req, res) => {  
+    try {
+        const noteId = req.params.id;
+        if(!noteId) {
+            throw new Error("please provide a valid note id.");
+        }   
+        const note = await Note.findOne({where: {id: noteId}});
+        const sender = await User.findOne({where: {id: note.from}});
+        const response = {
+            noteId: note.id,
+            noteTitle: note.title,
+            noteBody: note.body,
+            noteDisabled: note.disabled,
+            noteOwnerName: req.user.name,
+            noteOwnerEmail: req.user.email,
+            noteSenderName: sender.name,
+            noteSenderEmail: sender.email
+        }
+        if(note) return res.status(200).send(response);
+        else throw new Error("No notes found with that id.")
+    } catch (e) {
+        res.status(500).send(e.message)
     }
 }
 

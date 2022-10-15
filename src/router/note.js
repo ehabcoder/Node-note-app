@@ -26,6 +26,9 @@ const upload = multer({
 */
 router.post('/notes', auth, upload.single('media_file'), noteController.send);
 
+// Send note with reciever email
+router.post('/notes/send', auth, noteController.sendWithEmail)
+
 
 /*
     Get list of notes for the last 30 days.
@@ -35,6 +38,9 @@ router.post('/notes', auth, upload.single('media_file'), noteController.send);
     GET /notes?limit=10&skip=0
 */
 router.get('/notes', auth, noteController.list);
+
+// Get Note By Id
+router.get('/notes/:id', auth, noteController.getNote)
 
 /*
     DELETE /notes/:noteId
